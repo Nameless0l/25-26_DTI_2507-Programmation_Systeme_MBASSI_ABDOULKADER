@@ -17,7 +17,6 @@ int main() {
     
     while (1)
     {
-        write(1, "enseash % ", 11);
         taille_commande = read(STDIN_FILENO, commande, TAILLE_MAX_COMMANDE - 1);
         if (taille_commande<=0)
         {
@@ -44,7 +43,7 @@ int main() {
         {
             wait(NULL);
         }
-        
+        write(1, "enseash % ", 11);
         
 
     }

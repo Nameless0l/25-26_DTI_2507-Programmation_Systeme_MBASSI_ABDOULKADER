@@ -12,7 +12,7 @@ int main() {
 
     write(1, "\nBienvenue dans le Shell ENSEA.\n", 30);
     write(1, "\nPour quitter, tapez 'exit'.\n", 29);
-    write(1, "enseash % ", 11);
+    write(1, "enseash % \n", 11);
 
 
     return 0;
