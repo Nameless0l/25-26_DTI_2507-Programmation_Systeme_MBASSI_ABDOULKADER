@@ -1,7 +1,7 @@
 #include <unistd.h>
 
-void afficher_message_accueil() {
-    write(1, "\nBienvenue dans le Shell ENSEA.\n", 30);
-    write(1, "\nPour quitter, tapez 'exit'.\n", 29);
-    write(1, "enseash % ", 11);
+void print_welcome_message() {
+    write(STDOUT_FILENO, "\nBienvenue dans le Shell ENSEA.\n", 30);
+    write(STDOUT_FILENO, "\nPour quitter, tapez 'exit'.\n", 29);
+    write(STDOUT_FILENO, "enseash % ", 11);
 }

@@ -10,7 +10,7 @@
 int main() {
     // 1. Affichage d’un message d’accueil, suivi d’un prompt simple. Par exemple :
 
-    afficher_message_accueil();
+    print_welcome_message();
     // 2. Exécution de la commande saisie et retour au prompt (REPL : read–eval–print loop) :
     char commande[TAILLE_MAX_COMMANDE];
     ssize_t taille_commande;
@@ -18,7 +18,7 @@ int main() {
     while (1)
     {
         write(1, "enseash % ", 11);
-        taille_commande = read(0, commande, TAILLE_MAX_COMMANDE - 1);
+        taille_commande = read(STDIN_FILENO, commande, TAILLE_MAX_COMMANDE - 1);
         if (taille_commande<=0)
         {
             break;
@@ -28,6 +28,7 @@ int main() {
         {
             break;
         }
+
         // Exécution de la commande
         pid_t pid = fork();
         if (pid ==-1)
