@@ -8,10 +8,10 @@
 # include "constantes.h"
 
 int main() {
-    // 1. Affichage d’un message d’accueil, suivi d’un prompt simple. Par exemple :
+    // 1. Affichage
 
     print_welcome_message();
-    // 2. Exécution de la commande saisie et retour au prompt (REPL : read–eval–print loop) :
+    // 2. Exécution
     char commande[TAILLE_MAX_COMMANDE];
     ssize_t taille_commande;
     
@@ -19,12 +19,18 @@ int main() {
     {
         write(1, "enseash % ", 11);
         taille_commande = read(0, commande, TAILLE_MAX_COMMANDE - 1);
-        if (taille_commande<=0)
+        if (taille_commande<0)
         {
+            perror("Erreur lors de la lecture de la commande");
             break;
         }
         commande[taille_commande - 1] = '\0';
         if (strcmp(commande, "exit") == 0)
+        {
+            write(1, "Bye Bye\n", 8);
+            break;
+        }
+        if (taille_commande == 0)
         {
             write(1, "Bye Bye\n", 8);
             break;
