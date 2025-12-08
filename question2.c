@@ -24,9 +24,11 @@ int main() {
             break;
         }
         commande[taille_commande - 1] = '\0';
+        // Vérification de la commande 'exit'
         if (strcmp(commande, "exit") == 0)
         {
-            break;
+
+            exit(0);
         }
 
         // Exécution de la commande

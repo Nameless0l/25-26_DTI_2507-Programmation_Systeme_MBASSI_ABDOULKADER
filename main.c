@@ -10,7 +10,7 @@
 int main() {
     // 1. Affichage d’un message d’accueil, suivi d’un prompt simple. Par exemple :
 
-    afficher_message_accueil();
+    print_welcome_message();
     // 2. Exécution de la commande saisie et retour au prompt (REPL : read–eval–print loop) :
     char commande[TAILLE_MAX_COMMANDE];
     ssize_t taille_commande;
@@ -26,6 +26,7 @@ int main() {
         commande[taille_commande - 1] = '\0';
         if (strcmp(commande, "exit") == 0)
         {
+            write(1, "Bye Bye\n", 8);
             break;
         }
         // Exécution de la commande
@@ -41,8 +42,7 @@ int main() {
         {
             wait(NULL);
         }
-        
-        
+
 
     }
     
