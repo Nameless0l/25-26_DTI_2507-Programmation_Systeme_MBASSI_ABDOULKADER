@@ -1,6 +1,6 @@
 # TP - Micro Shell ENSEA
 
-**Auteurs :** [Vos noms]  
+**Auteurs :** MBASSI EWOLO LOIC ARON, ABDOULKADER Yacoub
 **Date :** Décembre 2025  
 **Cours :** Programmation Système
 
@@ -159,30 +159,7 @@ if (taille_commande <= 0) {
 
 ## Questions restantes
 
-- [ ] Question 4 : Affichage du code de retour dans le prompt
 - [ ] Question 5 : Mesure du temps d'exécution
 - [ ] Question 6 : Gestion des arguments de commande
 - [ ] Question 7 : Redirections et pipes
 
----
-
-## Contraintes respectées
-
-✅ Pas d'utilisation de `system()`  
-✅ Pas d'utilisation de `printf()` (utilisation de `write()`)  
-✅ Utilisation de `fork()` et `exec()` pour l'exécution des commandes  
-✅ Code et commentaires en anglais  
-✅ Utilisation de constantes (pas de nombres magiques)  
-✅ Fonctions `strn...` pour la manipulation de chaînes
-
----
-
-## Auteurs
-
-[Vos noms ici]
-
----
-
-## Dépôt GitHub
-
-[Lien vers votre dépôt GitHub]
