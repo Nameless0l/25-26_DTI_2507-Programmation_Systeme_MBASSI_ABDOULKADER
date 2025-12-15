@@ -12,6 +12,16 @@
 # include "question1.h"
 # include "constantes.h"
 
+void parse_command(char *commande, char **args) {
+    int i = 0;
+    char *token = strtok(commande, " ");
+    while (token != NULL && i < MAX_ARGS - 1) {
+        args[i++] = token;
+        token = strtok(NULL, " ");
+    }
+    args[i] = NULL; 
+}
+
 void write_int(long num) {
     if (num == 0) {
         write(1, "0", 1);
@@ -37,6 +47,7 @@ int main() {
     long exec_time_ms;
     int status;
     bool display_status = false;
+    char *args[MAX_ARGS];
     
     
     while (1)
@@ -84,7 +95,10 @@ int main() {
             continue;
         }
         if(pid == 0){
-            execlp(commande, commande, NULL);
+            parse_command(commande, args);
+            execvp(args[0], args);
+            write(2, "Command not found\n", 18);
+            _exit(1);
         }else
         {
             clock_gettime(CLOCK_REALTIME, &start_time);
