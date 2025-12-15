@@ -1,19 +1,19 @@
 #define _POSIX_C_SOURCE 199309L
-#include <stdio.h>
 #include <time.h>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 
 // Custom includes
-#include "question1.h"
-#include "constantes.h"
+#include "pipe.h"
 #include "utils.h"
 #include "command.h"
-#include "pipe.h"
+#include "question1.h"
+#include "constantes.h"
 
 int main() {
     print_welcome_message();
