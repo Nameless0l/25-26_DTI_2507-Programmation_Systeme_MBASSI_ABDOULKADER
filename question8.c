@@ -13,13 +13,13 @@
 #include "utils.h"
 #include "command.h"
 #include "question1.h"
-#include "constantes.h"
+#include "constants.h"
 
 int main() {
     print_welcome_message();
     
-    char commande[TAILLE_MAX_COMMANDE];
-    ssize_t taille_commande;
+    char command[MAX_COMMAND_SIZE];
+    ssize_t command_size;
     struct timespec start_time, end_time;
     long exec_time_ms;
     int status;
@@ -47,19 +47,19 @@ int main() {
         }
         
         
-        taille_commande = read(STDIN_FILENO, commande, TAILLE_MAX_COMMANDE - 1);
-        if (taille_commande<0)
+        command_size = read(STDIN_FILENO, command, MAX_COMMAND_SIZE - 1);
+        if (command_size<0)
         {
-            perror("Erreur lors de la lecture de la commande");
+            perror("Error reading command");
             break;
         }
-        commande[taille_commande - 1] = '\0';
-        if (strcmp(commande, "exit") == 0)
+        command[command_size - 1] = '\0';
+        if (strcmp(command, "exit") == 0)
         {
             write(1, "Bye Bye\n", 8);
             exit(0);
         }
-        if (taille_commande == 0)
+        if (command_size == 0)
         {
             write(1, "Bye Bye\n", 8);
             exit(0);
@@ -68,18 +68,18 @@ int main() {
         // Execute command
         clock_gettime(CLOCK_REALTIME, &start_time);
         
-        if (has_pipe(commande)) {
-            execute_pipe(commande, &status);
+        if (has_pipe(command)) {
+            execute_pipe(command, &status);
         }
         else {
             pid_t pid = fork();
             if (pid == -1)
             {
-                perror("Erreur lors de la creation du terminal");
+                perror("Error creating child process");
                 continue;
             }
             if(pid == 0){
-                parse_command(commande, args);
+                parse_command(command, args);
                 handle_redirection(args);
                 execvp(args[0], args);
                 write(2, "Command not found\n", 18);

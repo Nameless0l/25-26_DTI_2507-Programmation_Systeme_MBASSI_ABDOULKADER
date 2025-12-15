@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include "pipe.h"
 #include "command.h"
-#include "constantes.h"
+#include "constants.h"
 
 int has_pipe(char *commande) {
     return strchr(commande, '|') != NULL;

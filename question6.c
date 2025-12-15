@@ -10,11 +10,11 @@
 #include <time.h>
 // custom includes
 # include "question1.h"
-# include "constantes.h"
+# include "constants.h"
 
-void parse_command(char *commande, char **args) {
+void parse_command(char *command, char **args) {
     int i = 0;
-    char *token = strtok(commande, " ");
+    char *token = strtok(command, " ");
     while (token != NULL && i < MAX_ARGS - 1) {
         args[i++] = token;
         token = strtok(NULL, " ");
@@ -40,9 +40,9 @@ void write_int(long num) {
 
 int main() {
     print_welcome_message();
-    // 2. Exécution
-    char commande[TAILLE_MAX_COMMANDE];
-    ssize_t taille_commande;
+    // 2. Execution
+    char command[MAX_COMMAND_SIZE];
+    ssize_t command_size;
     struct timespec start_time, end_time;
     long exec_time_ms;
     int status;
@@ -70,32 +70,32 @@ int main() {
         }
         
         
-        taille_commande = read(STDIN_FILENO, commande, TAILLE_MAX_COMMANDE - 1);
-        if (taille_commande<0)
+        command_size = read(STDIN_FILENO, command, MAX_COMMAND_SIZE - 1);
+        if (command_size<0)
         {
-            perror("Erreur lors de la lecture de la commande");
+            perror("Error reading command");
             break;
         }
-        commande[taille_commande - 1] = '\0';
-        if (strcmp(commande, "exit") == 0)
+        command[command_size - 1] = '\0';
+        if (strcmp(command, "exit") == 0)
         {
             write(1, "Bye Bye\n", 8);
             exit(0);
         }
-        if (taille_commande == 0)
+        if (command_size == 0)
         {
             write(1, "Bye Bye\n", 8);
             exit(0);
         }
-        // Exécution de la commande
+        // Execute the command
         pid_t pid = fork();
         if (pid ==-1)
         {
-            perror("Erreur lors de la creation du terminal");
+            perror("Error creating child process");
             continue;
         }
         if(pid == 0){
-            parse_command(commande, args);
+            parse_command(command, args);
             execvp(args[0], args);
             write(2, "Command not found\n", 18);
             _exit(1);

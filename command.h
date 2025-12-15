@@ -1,7 +1,7 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-#include "constantes.h"
+#include "constants.h"
 
 // Parse command string into arguments array
 void parse_command(char *commande, char **args);

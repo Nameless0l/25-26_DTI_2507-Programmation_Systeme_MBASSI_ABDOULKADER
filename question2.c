@@ -4,41 +4,41 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-# include "question1.h"
-# include "constantes.h"
+#include "question1.h"
+#include "constants.h"
 
 int main() {
-    // 1. Affichage d’un message d’accueil, suivi d’un prompt simple. Par exemple :
+    // 1. Display a welcome message, followed by a simple prompt. Example:
 
     print_welcome_message();
-    // 2. Exécution de la commande saisie et retour au prompt (REPL : read–eval–print loop) :
-    char commande[TAILLE_MAX_COMMANDE];
-    ssize_t taille_commande;
+    // 2. Execute the entered command and return to prompt (REPL: read-eval-print loop):
+    char command[MAX_COMMAND_SIZE];
+    ssize_t command_size;
     
     while (1)
     {
-        taille_commande = read(STDIN_FILENO, commande, TAILLE_MAX_COMMANDE - 1);
-        if (taille_commande<=0)
+        command_size = read(STDIN_FILENO, command, MAX_COMMAND_SIZE - 1);
+        if (command_size<=0)
         {
             break;
         }
-        commande[taille_commande - 1] = '\0';
-        // Vérification de la commande 'exit'
-        if (strcmp(commande, "exit") == 0)
+        command[command_size - 1] = '\0';
+        // Check for 'exit' command
+        if (strcmp(command, "exit") == 0)
         {
 
             exit(0);
         }
 
-        // Exécution de la commande
+        // Execute the command
         pid_t pid = fork();
         if (pid ==-1)
         {
-            perror("Erreur lors de la creation du terminal");
+            perror("Error creating child process");
             continue;
         }
         if(pid == 0){
-            execlp(commande, commande, NULL);
+            execlp(command, command, NULL);
         }else
         {
             wait(NULL);

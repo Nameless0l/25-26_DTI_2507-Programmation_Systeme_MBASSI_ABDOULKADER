@@ -21,7 +21,7 @@ void handle_redirection(char **args) {
             args[i] = NULL; 
             int fd = open(args[i + 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
             if (fd < 0) {
-                perror("Erreur lors de l'ouverture du fichier de redirection");
+                perror("Error opening redirection file");
                 _exit(1);
             }
             dup2(fd, STDOUT_FILENO);
@@ -31,7 +31,7 @@ void handle_redirection(char **args) {
             args[i] = NULL; 
             int fd = open(args[i + 1], O_RDONLY);
             if (fd < 0) {
-                perror("Erreur lors de l'ouverture du fichier de redirection");
+                perror("Error opening redirection file");
                 _exit(1);
             }
             dup2(fd, STDIN_FILENO);

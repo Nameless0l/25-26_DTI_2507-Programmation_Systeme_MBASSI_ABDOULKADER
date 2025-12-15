@@ -3,15 +3,15 @@
 
 
 int main() {
-    // Affichage d’un message d’accueil, suivi d’un prompt simple. Par exemple :
+    // Display a welcome message, followed by a simple prompt. Example:
     // $ ./enseash
-    // Bienvenue dans le Shell ENSEA.
-    // Pour quitter, tapez 'exit'.
+    // Welcome to ENSEA Shell.
+    // To exit, type 'exit'.
     // enseash %
 
 
-    write(1, "\nBienvenue dans le Shell ENSEA.\n", 30);
-    write(1, "\nPour quitter, tapez 'exit'.\n", 29);
+    write(1, "\nWelcome to ENSEA Shell.\n", 25);
+    write(1, "\nTo exit, type 'exit'.\n", 23);
     write(1, "enseash % \n", 11);
 
 

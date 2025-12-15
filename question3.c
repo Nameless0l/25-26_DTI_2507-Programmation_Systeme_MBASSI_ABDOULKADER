@@ -5,46 +5,46 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 # include "question1.h"
-# include "constantes.h"
+# include "constants.h"
 
 int main() {
-    // 1. Affichage
+    // 1. Display
 
     print_welcome_message();
-    // 2. Exécution
-    char commande[TAILLE_MAX_COMMANDE];
-    ssize_t taille_commande;
+    // 2. Execution
+    char command[MAX_COMMAND_SIZE];
+    ssize_t command_size;
 
     
     while (1)
     {
         write(1, "enseash % ", 11);
-        taille_commande = read(0, commande, TAILLE_MAX_COMMANDE - 1);
-        if (taille_commande<0)
+        command_size = read(0, command, MAX_COMMAND_SIZE - 1);
+        if (command_size<0)
         {
-            perror("Erreur lors de la lecture de la commande");
+            perror("Error reading command");
             break;
         }
-        commande[taille_commande - 1] = '\0';
-        if (strcmp(commande, "exit") == 0)
-        {
-            write(1, "Bye Bye\n", 8);
-            break;
-        }
-        if (taille_commande == 0)
+        command[command_size - 1] = '\0';
+        if (strcmp(command, "exit") == 0)
         {
             write(1, "Bye Bye\n", 8);
             break;
         }
-        // Exécution de la commande
+        if (command_size == 0)
+        {
+            write(1, "Bye Bye\n", 8);
+            break;
+        }
+        // Execute the command
         pid_t pid = fork();
         if (pid ==-1)
         {
-            perror("Erreur lors de la creation du terminal");
+            perror("Error creating child process");
             continue;
         }
         if(pid == 0){
-            execlp(commande, commande, NULL);
+            execlp(command, command, NULL);
         }else
         {
             wait(NULL);
