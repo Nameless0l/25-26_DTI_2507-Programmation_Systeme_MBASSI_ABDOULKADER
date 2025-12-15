@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 199309L // Inclut pour clock_gettime(Reference: stack overflow)
 #include<stdio.h>
 #include <time.h>
 #include <unistd.h>
@@ -6,21 +7,18 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-
+#include <time.h>
 // custom includes
 # include "question1.h"
 # include "constantes.h"
-#define BILLION  1000000000L;
 
 int main() {
-    // 1. Affichage
-
     print_welcome_message();
     // 2. Exécution
     char commande[TAILLE_MAX_COMMANDE];
     ssize_t taille_commande;
-    struct timespec start, finish;
-
+    struct timespec start_time, end_time;
+    long exec_time_ms;
     int status;
     bool display_status = false;
     
@@ -47,7 +45,23 @@ int main() {
                 }
             }
             write(1, code_str, len);
-            write(1, "] % ", 4);
+            write(1, "|", 1);
+            char time_str[20];
+            int time_len = 0;
+            long temp_time = exec_time_ms;
+            if (temp_time == 0) {
+                time_str[time_len++] = '0';
+            } else {
+                int div = 1;
+                while (temp_time / div >= 10) div *= 10;
+                while (div > 0) {
+                    time_str[time_len++] = '0' + (temp_time / div);
+                    temp_time %= div;
+                    div /= 10;
+                }
+            }
+            write(1, time_str, time_len);
+            write(1, "ms] % ", 6);
         }
         else if (WIFSIGNALED(status)) {
             write(1, "enseash [sign:", 14);
@@ -67,7 +81,24 @@ int main() {
                 }
             }
             write(1, sig_str, len);
-            write(1, "] % ", 4);
+            write(1, "|", 1);
+            // Write execution time
+            char time_str2[20];
+            int time_len2 = 0;
+            long temp_time2 = exec_time_ms;
+            if (temp_time2 == 0) {
+                time_str2[time_len2++] = '0';
+            } else {
+                int div2 = 1;
+                while (temp_time2 / div2 >= 10) div2 *= 10;
+                while (div2 > 0) {
+                    time_str2[time_len2++] = '0' + (temp_time2 / div2);
+                    temp_time2 %= div2;
+                    div2 /= 10;
+                }
+            }
+            write(1, time_str2, time_len2);
+            write(1, "ms] % ", 6);
         }
         
         
@@ -99,14 +130,13 @@ int main() {
             execlp(commande, commande, NULL);
         }else
         {
+            clock_gettime(CLOCK_REALTIME, &start_time);
             waitpid(pid, &status, 0);
+            clock_gettime(CLOCK_REALTIME, &end_time);
             display_status = true;
+            exec_time_ms = (end_time.tv_sec - start_time.tv_sec) * 1000 + 
+                           (end_time.tv_nsec - start_time.tv_nsec) / 1000000;
         }
-
-        time_t tv_sec;
-        double accum = ( finish.tv_sec - start.tv_sec )
-          + ( finish.tv_nsec - start.tv_nsec ) / BILLION;
-        printf( "%lf\n", accum );
     }
     
     return 0;
