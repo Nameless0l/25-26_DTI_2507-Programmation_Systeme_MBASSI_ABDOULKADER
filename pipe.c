@@ -42,7 +42,6 @@ void execute_pipe(char *commande, int *status) {
     }
     
     if (pid1 == 0) {
-        // Child 1: redirect stdout to pipe write end
         close(pipefd[0]);
         dup2(pipefd[1], STDOUT_FILENO);
         close(pipefd[1]);
@@ -54,7 +53,6 @@ void execute_pipe(char *commande, int *status) {
         _exit(1);
     }
     
-    // Second child: executes cmd2, input comes from pipe
     pid_t pid2 = fork();
     if (pid2 == -1) {
         perror("Fork failed");
@@ -62,7 +60,7 @@ void execute_pipe(char *commande, int *status) {
     }
     
     if (pid2 == 0) {
-        // Child 2: redirect stdin to pipe read end
+        // Child 2: redirect stdin to pipe read
         close(pipefd[1]);
         dup2(pipefd[0], STDIN_FILENO);
         close(pipefd[0]);
@@ -74,7 +72,6 @@ void execute_pipe(char *commande, int *status) {
         _exit(1);
     }
     
-    // Parent: close pipe and wait for both children
     close(pipefd[0]);
     close(pipefd[1]);
     waitpid(pid1, NULL, 0);

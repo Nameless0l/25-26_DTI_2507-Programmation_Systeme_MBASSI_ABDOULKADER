@@ -29,6 +29,12 @@ question5: question5.c question1.h
 question6: question6.c question1.h
 	$(CC) $(CFLAGS) -o $@ question6.c
 
+question7: question7.c question1.h
+	$(CC) $(CFLAGS) -o $@ question7.c
+
+question8: question8.c question1.h
+	$(CC) $(CFLAGS) -o $@ question8.c
+
 indent:
 	indent -linux -i4 -nut -ts2 *.c
 

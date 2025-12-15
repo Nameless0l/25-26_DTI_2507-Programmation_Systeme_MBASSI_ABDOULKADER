@@ -30,6 +30,7 @@ int main() {
     while (1)
     {
         if(!display_status){
+            // write(1, "enseash % ", 11);
         }else if (WIFEXITED(status)) {
             write(1, "enseash [exit:", 14);
             write_int(WEXITSTATUS(status));
@@ -94,6 +95,6 @@ int main() {
         exec_time_ms = (end_time.tv_sec - start_time.tv_sec) * 1000 + 
                        (end_time.tv_nsec - start_time.tv_nsec) / 1000000;
     }
-
+    
     return 0;
 }
