@@ -1,13 +1,14 @@
 #define _POSIX_C_SOURCE 199309L // Include for clock_gettime(Reference: stack overflow : https://stackoverflow.com/questions/48332332/what-does-define-posix-source-mean)
 #include<stdio.h>
 #include <time.h>
+#include <time.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <time.h>
 // custom includes
 # include "question1.h"
 # include "constantes.h"
@@ -20,6 +21,32 @@ void parse_command(char *commande, char **args) {
         token = strtok(NULL, " ");
     }
     args[i] = NULL; 
+}
+
+void handle_redirection(char **args){
+    for (int i = 0; args[i] != NULL; i++) {
+        if (strcmp(args[i], ">") == 0) {
+            args[i] = NULL; 
+            int fd = open(args[i + 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+            if (fd < 0) {
+                perror("Erreur lors de l'ouverture du fichier de redirection");
+                _exit(1);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+            break;
+        } else if (strcmp(args[i], "<") == 0) {
+            args[i] = NULL; 
+            int fd = open(args[i + 1], O_RDONLY);
+            if (fd < 0) {
+                perror("Erreur lors de l'ouverture du fichier de redirection");
+                _exit(1);
+            }
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+            break;
+        }
+    }
 }
 
 void write_int(long num) {
@@ -96,6 +123,7 @@ int main() {
         }
         if(pid == 0){
             parse_command(commande, args);
+            handle_redirection(args);
             execvp(args[0], args);
             write(2, "Command not found\n", 18);
             _exit(1);
