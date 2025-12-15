@@ -12,9 +12,7 @@
 # include "question1.h"
 # include "constantes.h"
 
-#define MAX_ARGS 10
-
-void parse_command(char *commande, char **args) { // for parsing command into arguments
+void parse_command(char *commande, char **args) {
     int i = 0;
     char *token = strtok(commande, " ");
     while (token != NULL && i < MAX_ARGS - 1) {
