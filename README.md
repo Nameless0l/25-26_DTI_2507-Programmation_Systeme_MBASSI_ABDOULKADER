@@ -310,6 +310,74 @@ void handle_redirections(char **args) {
 
 ---
 
+### Question 8 : Gestion des pipes
+
+**Objectif :** Gerer les redirections de type pipe avec `|` pour chainer des commandes.
+
+**Fichier :** `question8.c` / `enseash`
+
+**Execution :**
+```bash
+./enseash
+```
+
+**Capture d'ecran :**
+
+![Question 8](figures/question8.png)
+
+**Exemple d'utilisation :**
+```
+enseash % ls | wc -l
+15
+enseash [exit:0|5ms] % cat main.c | grep include
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+// Custom includes
+#include "question1.h"
+#include "constantes.h"
+#include "utils.h"
+#include "command.h"
+#include "pipe.h"
+enseash [exit:0|4ms] %
+```
+
+**Explication:**
+
+Le pipe permet de connecter la sortie standard d'une commande a l'entree standard d'une autre :
+![Pipe Illustraction](figures/pipe_explain.jpg)
+
+```
+  Ex :        cmd1              pipe              cmd2
+               (ls)                               (wc -l)
+                  stdout --> pipefd[1] ====> pipefd[0] --> stdin
+```
+
+**Implementation :**
+
+1. **Detection du pipe** : `has_pipe()` verifie si la commande contient `|`
+
+2. **Creation du pipe** : `pipe(pipefd)` cree un tuyau avec deux extremites :
+   - `pipefd[0]` : extremite lecture
+   - `pipefd[1]` : extremite ecriture
+
+3. **Deux processus fils** :
+   - **Enfant 1** : execute `cmd1`, redirige stdout vers `pipefd[1]`
+   - **Enfant 2** : execute `cmd2`, redirige stdin depuis `pipefd[0]`
+
+
+
+**Pourquoi fermer les descripteurs ?**
+- Chaque processus doit fermer les extremites du pipe qu'il n'utilise pas
+- Si le parent ne ferme pas le pipe, `cmd2` attendra indefiniment (pensant que des donnees peuvent encore arriver)
+
+---
+
 ## Structure du projet
 
 ```
@@ -317,22 +385,27 @@ void handle_redirections(char **args) {
 ├── Makefile              # Compilation du projet
 ├── constantes.h          # Definition des constantes (TAILLE_MAX_COMMANDE, MAX_ARGS)
 ├── question1.h           # Header pour fonctions communes (print_welcome_message)
+├── utils.h / utils.c     # Fonction write_int()
+├── command.h / command.c # Fonctions parse_command(), handle_redirection()
+├── pipe.h / pipe.c       # Fonctions has_pipe(), execute_pipe()
 ├── question1.c           # Question 1 : Message d'accueil
 ├── question2.c           # Question 2 : Boucle REPL
 ├── question3.c           # Question 3 : Gestion exit et Ctrl+D
 ├── question5.c           # Questions 4-5 : Code retour et temps
 ├── question6.c           # Question 6 : Arguments
-├── main.c                # Question 7 : Redirections (version finale)
+├── question7.c           # Question 7 : Redirections
+├── question8.c           # Question 8 : Pipes
+├── main.c                # Version finale (enseash)
 ├── figures/              # Captures d'ecran
 │   ├── question1.png
 │   ├── question2.png
 │   ├── question5.png
 │   ├── question6.png
 │   ├── question7.png
-│   └── question7_b.png
+│   ├── question7_b.png
+│   └── question8.png
 └── README.md             # Ce fichier
 ```
-
 
 ---
 
@@ -349,6 +422,9 @@ void handle_redirections(char **args) {
 | `open()` | Ouverture d'un fichier |
 | `dup2()` | Duplication de descripteur de fichier |
 | `close()` | Fermeture d'un descripteur de fichier |
+| `pipe()` | Creation d'un pipe |
+| `strtok()` | Decoupage de chaine en tokens |
+| `strchr()` | Recherche d'un caractere dans une chaine |
 
 ---
 

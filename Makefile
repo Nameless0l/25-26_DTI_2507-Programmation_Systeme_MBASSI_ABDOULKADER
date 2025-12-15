@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -g
 MAIN_SRC = main.c utils.c command.c pipe.c
 MAIN_OBJ = $(MAIN_SRC:.c=.o)
 
-QUESTIONS = question1 question2 question3 question5 question6
+QUESTIONS = question1 question2 question3 question5 question6 question7 question8
 
 all: enseash $(QUESTIONS)
 
@@ -29,11 +29,11 @@ question5: question5.c question1.h
 question6: question6.c question1.h
 	$(CC) $(CFLAGS) -o $@ question6.c
 
-question7: question7.c question1.h
-	$(CC) $(CFLAGS) -o $@ question7.c
+question7: question7.c question1.h command.c utils.c
+	$(CC) $(CFLAGS) -o $@ question7.c command.c utils.c
 
-question8: question8.c question1.h
-	$(CC) $(CFLAGS) -o $@ question8.c
+question8: question8.c question1.h command.c utils.c pipe.c
+	$(CC) $(CFLAGS) -o $@ question8.c command.c utils.c pipe.c
 
 indent:
 	indent -linux -i4 -nut -ts2 *.c

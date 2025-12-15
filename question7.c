@@ -12,58 +12,9 @@
 // custom includes
 # include "question1.h"
 # include "constantes.h"
+# include "utils.h"
+# include "command.h"
 
-void parse_command(char *commande, char **args) {
-    int i = 0;
-    char *token = strtok(commande, " ");
-    while (token != NULL && i < MAX_ARGS - 1) {
-        args[i++] = token;
-        token = strtok(NULL, " ");
-    }
-    args[i] = NULL; 
-}
-
-void handle_redirection(char **args){
-    for (int i = 0; args[i] != NULL; i++) {
-        if (strcmp(args[i], ">") == 0) {
-            args[i] = NULL; 
-            int fd = open(args[i + 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-            if (fd < 0) {
-                perror("Erreur lors de l'ouverture du fichier de redirection");
-                _exit(1);
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-            break;
-        } else if (strcmp(args[i], "<") == 0) {
-            args[i] = NULL; 
-            int fd = open(args[i + 1], O_RDONLY);
-            if (fd < 0) {
-                perror("Erreur lors de l'ouverture du fichier de redirection");
-                _exit(1);
-            }
-            dup2(fd, STDIN_FILENO);
-            close(fd);
-            break;
-        }
-    }
-}
-
-void write_int(long num) {
-    if (num == 0) {
-        write(1, "0", 1);
-        return;
-    }
-    char buffer[20];
-    int i = 0;
-    while (num > 0) {
-        buffer[i++] = '0' + (num % 10);
-        num /= 10;
-    }
-    while (i > 0) {
-        write(1, &buffer[--i], 1);
-    }
-}
 
 int main() {
     print_welcome_message();
