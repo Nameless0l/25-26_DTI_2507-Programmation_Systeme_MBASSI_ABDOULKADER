@@ -1,14 +1,14 @@
 # TP - Micro Shell ENSEA
 
-**Auteurs :** MBASSI EWOLO LOIC ARON, ABDOULKADER Yacoub
-**Date :** Decembre 2025  
-**Cours :** Programmation Systeme
+- **Auteurs :** MBASSI EWOLO LOIC ARON, ABDOULKADER Yacoub
+- **Date :** Decembre 2025  
+- **Cours :** Programmation Systeme
 
 ---
 
 ## Description du projet
 
-Ce projet consiste a developper un **micro shell** appele `enseash`, capable d'executer des commandes et d'afficher des informations sur leur execution (codes de sortie, signaux, temps d'execution).
+Ce projet consiste a developper un **micro shell** appele `enseash`, capable d'executer des commandes et d'afficher des informations sur leur execution (comme codes de sortie, signaux, temps d'execution).
 
 ---
 
