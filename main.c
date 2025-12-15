@@ -1,73 +1,23 @@
-#define _POSIX_C_SOURCE 199309L // Include for clock_gettime(Reference: stack overflow : https://stackoverflow.com/questions/48332332/what-does-define-posix-source-mean)
-#include<stdio.h>
+#define _POSIX_C_SOURCE 199309L
+#include <stdio.h>
 #include <time.h>
-#include <time.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-// custom includes
-# include "question1.h"
-# include "constantes.h"
 
-void parse_command(char *commande, char **args) {
-    int i = 0;
-    char *token = strtok(commande, " ");
-    while (token != NULL && i < MAX_ARGS - 1) {
-        args[i++] = token;
-        token = strtok(NULL, " ");
-    }
-    args[i] = NULL; 
-}
-
-void handle_redirection(char **args){
-    for (int i = 0; args[i] != NULL; i++) {
-        if (strcmp(args[i], ">") == 0) {
-            args[i] = NULL; 
-            int fd = open(args[i + 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-            if (fd < 0) {
-                perror("Erreur lors de l'ouverture du fichier de redirection");
-                _exit(1);
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-            break;
-        } else if (strcmp(args[i], "<") == 0) {
-            args[i] = NULL; 
-            int fd = open(args[i + 1], O_RDONLY);
-            if (fd < 0) {
-                perror("Erreur lors de l'ouverture du fichier de redirection");
-                _exit(1);
-            }
-            dup2(fd, STDIN_FILENO);
-            close(fd);
-            break;
-        }
-    }
-}
-
-void write_int(long num) {
-    if (num == 0) {
-        write(1, "0", 1);
-        return;
-    }
-    char buffer[20];
-    int i = 0;
-    while (num > 0) {
-        buffer[i++] = '0' + (num % 10);
-        num /= 10;
-    }
-    while (i > 0) {
-        write(1, &buffer[--i], 1);
-    }
-}
+// Custom includes
+#include "question1.h"
+#include "constantes.h"
+#include "utils.h"
+#include "command.h"
+#include "pipe.h"
 
 int main() {
     print_welcome_message();
-    // 2. Exécution
+    
     char commande[TAILLE_MAX_COMMANDE];
     ssize_t taille_commande;
     struct timespec start_time, end_time;
@@ -114,28 +64,36 @@ int main() {
             write(1, "Bye Bye\n", 8);
             exit(0);
         }
-        // Exécution de la commande
-        pid_t pid = fork();
-        if (pid ==-1)
-        {
-            perror("Erreur lors de la creation du terminal");
-            continue;
+        
+        // Execute command
+        clock_gettime(CLOCK_REALTIME, &start_time);
+        
+        if (has_pipe(commande)) {
+            execute_pipe(commande, &status);
         }
-        if(pid == 0){
-            parse_command(commande, args);
-            handle_redirection(args);
-            execvp(args[0], args);
-            write(2, "Command not found\n", 18);
-            _exit(1);
-        }else
-        {
-            clock_gettime(CLOCK_REALTIME, &start_time);
-            waitpid(pid, &status, 0);
-            clock_gettime(CLOCK_REALTIME, &end_time);
-            display_status = true;
-            exec_time_ms = (end_time.tv_sec - start_time.tv_sec) * 1000 + 
-                           (end_time.tv_nsec - start_time.tv_nsec) / 1000000;
+        else {
+            pid_t pid = fork();
+            if (pid == -1)
+            {
+                perror("Erreur lors de la creation du terminal");
+                continue;
+            }
+            if(pid == 0){
+                parse_command(commande, args);
+                handle_redirection(args);
+                execvp(args[0], args);
+                write(2, "Command not found\n", 18);
+                _exit(1);
+            }else
+            {
+                waitpid(pid, &status, 0);
+            }
         }
+        
+        clock_gettime(CLOCK_REALTIME, &end_time);
+        display_status = true;
+        exec_time_ms = (end_time.tv_sec - start_time.tv_sec) * 1000 + 
+                       (end_time.tv_nsec - start_time.tv_nsec) / 1000000;
     }
     
     return 0;
